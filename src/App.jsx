@@ -29,7 +29,6 @@ class Imc extends React.Component {
       altura: null,
       masculino: null,
       maior: null
-
     };
   }
 
@@ -42,11 +41,11 @@ class Imc extends React.Component {
   }
 
   setMasculino(event) {
-    this.setState({ masculino: event.target.value });
+    this.setState({ masculino: event.target.checked });
   }
 
   setMaior(event) {
-    this.setState({ maior: event.target.value });
+    this.setState({ maior: event.target.checked });
   }
 
   calcular() {
@@ -56,6 +55,7 @@ class Imc extends React.Component {
       return peso / Math.pow(altura, 2);
     }
   }
+
 tipo (imc, a, b, c, d, e){
   if (imc < a) {
     return "Abaixo do peso";
@@ -130,7 +130,7 @@ tipo (imc, a, b, c, d, e){
                   <InputAdornment position="start">m</InputAdornment>,
               }}
             />
-             <Text Field
+             <TextField
                onChange={this.setAltura}
                margin="normal"
                required
