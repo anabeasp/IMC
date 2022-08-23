@@ -7,6 +7,7 @@ import TextField from '@mui/material/TextField';
 import FormGroup from '@mui/material/FormGroup'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
+import Button from '@mui/material/Button';
 import InputAdornment from '@mui/material/InputAdornment';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -24,6 +25,7 @@ class Imc extends React.Component {
     this.setMasculino = this.setMasculino.bind(this);
     this.setMaior = this.setMaior.bind(this);
     this.resultado = this.resultado.bind(this);
+    this.enviar = this.enviar.bind(this);
     this.state = {
       peso: null,
       altura: null,
@@ -90,6 +92,26 @@ tipo (imc, a, b, c, d, e){
     return resultado;
   }
 
+enviar() {
+    let date = new Date().toISOString();
+    date = date.replace(/([^T]+)T([^\.]+).*/g, '$1 $2');
+    let imc = this.calcular();
+    if (imc) {
+      let myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      let requestOptions = {
+          method: "post",
+          headers: myHeaders,
+          redirect: "follow",
+          body: JSON.stringify([[date,imc]])
+      };
+      fetch("https://v1.nocodeapi.com/anabeasp/google_sheets/oqbxfKSnxTjJIUgY?tabId=Dados", requestOptions)
+          .then(response => response.text())
+          .then(result => console.log(result))
+          .catch(error => console.log('error', error));
+    }
+  }
+
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -127,7 +149,7 @@ tipo (imc, a, b, c, d, e){
               type="number"
               InputProps={{
                 startAdornment:
-                  <InputAdornment position="start">m</InputAdornment>,
+                  <InputAdornment position="start">kg</InputAdornment>,
               }}
             />
              <TextField
@@ -148,12 +170,29 @@ tipo (imc, a, b, c, d, e){
               {this.resultado()}
             </Typography>
           </Box>
+          <Box
+            sx={{
+              display: 'inline',
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              onClick={this.enviar}
+              variant="contained">
+              Enviar
+            </Button>
+            <Button
+              href="https://docs.google.com/spreadsheets/d/e/2PACX-1vR4Ndz2KhsUzgTdwoaT01PK0y02G6fDho1ovr8OSj7gnGjzgcGSE28Jdc4W0VGeyYs7FTbC8cxXC0ek/pubhtml?gid=1912054104&single=true" 
+              variant="contained">
+              Relatório
+            </Button>
+          </Box>
         </Container>
       </ThemeProvider>
-    );
+      );
   }
 }
-
+          
 export default function App() {
   return (
     <Imc />
